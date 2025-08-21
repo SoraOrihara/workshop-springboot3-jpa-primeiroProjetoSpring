@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.educandoweb.course.services.exeptions.DatabaseExeption;
 import com.educandoweb.course.services.exeptions.ResourceNotFoundExeption;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,5 +23,11 @@ public class ResourceExeptionHandler {
 		return ResponseEntity.status(status).body(err);
 	}
 	
-	
+	@ExceptionHandler(DatabaseExeption.class)
+	public ResponseEntity<StandardError> database(DatabaseExeption e, HttpServletRequest request) {
+		String error = "Database error";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError err = new StandardError(Instant.now(),status.value() , error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
 }
